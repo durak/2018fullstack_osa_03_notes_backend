@@ -1,0 +1,16 @@
+GET http://localhost:3001/notes
+
+###
+
+DELETE http://localhost:3001/notes/1
+
+###
+
+POST http://localhost:3001/notes
+content-type: application/json
+
+{
+    "content": "testisyöte REST clientistä",
+    "important": true,
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
