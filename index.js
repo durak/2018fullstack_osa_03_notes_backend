@@ -37,6 +37,7 @@ const app = express()       // funktio palauttaa express-olion
 app.use(bodyParser.json())
 app.use(logger)
 app.use(cors())
+app.use(express.static('build'))
 
 
 // routemäärittelyt
