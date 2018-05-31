@@ -11,11 +11,11 @@ const Note = mongoose.model('Note', {
   important: Boolean
 })
 
-const note = new Note({
+/* const note = new Note({
   content: 'HTML on helppoa 3',
   date: new Date(),
   important: true
-})
+}) */
 
 /* note
   .save()
@@ -23,8 +23,8 @@ const note = new Note({
     console.log('note saved!')
     mongoose.connection.close()
   }) */
-  
-  Note
+
+Note
   .find({})
   .then(result => {
     result.forEach(note => {

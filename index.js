@@ -1,4 +1,4 @@
-const http = require('http')
+// const http = require('http')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -41,37 +41,37 @@ app.get('/api/notes/:id', (request, response) => {
       response.status(400).send({ error: 'malformatted id' })
     })
 
-/*   const id = Number(request.params.id)
-  const note = notes.find(note => {    
-    return note.id === id
-  })
-  
-  if (note) {
-    response.json(note)
-  } else {
-    response.status(404).end()
-  } */
+  /*   const id = Number(request.params.id)
+    const note = notes.find(note => {
+      return note.id === id
+    })
+
+    if (note) {
+      response.json(note)
+    } else {
+      response.status(404).end()
+    } */
 })
 
 app.get('/api/notes', (req, res) => {
   // res.json(notes)
   Note
-  .find({})
-  .then(notes => {
-    res.json(notes.map(formatNote))
-  })
+    .find({})
+    .then(notes => {
+      res.json(notes.map(formatNote))
+    })
 })
 
 app.delete('/api/notes/:id', (request, response) => {
-/*   const id = Number(request.params.id)
-  notes = notes.filter(note => note.id !== id)
-  response.status(204).end() */
+  /*   const id = Number(request.params.id)
+    notes = notes.filter(note => note.id !== id)
+    response.status(204).end() */
   Note
     .findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then( () => {
       response.status(204).end()
     })
-    .catch(error => {
+    .catch( () => {
       response.status(400).send({ error: 'malformatted id' })
     })
 
@@ -100,15 +100,15 @@ app.post('/api/notes', (request, response) => {
   const body = request.body
 
   if (body.content === undefined) {
-    return response.status(400).json({error: 'content missing'})
+    return response.status(400).json({ error: 'content missing' })
   }
 
   const note = new Note({
     content: body.content,
     important: body.important || false,
-    date: new Date()    
+    date: new Date()
   })
-  
+
   note
     .save()
     .then(formatNote)
@@ -116,8 +116,8 @@ app.post('/api/notes', (request, response) => {
       response.json(savedAndFormattedNote)
     })
 
-/*   console.log('body', body)
-  console.log('req headers', request.headers) */
+  /*   console.log('body', body)
+    console.log('req headers', request.headers) */
 })
 
 /* const app = http.createServer((req, res) => {
@@ -131,10 +131,10 @@ const error = (request, response) => {
 app.use(error)
 
 
-const generateId = () => {
+/* const generateId = () => {
   const maxId = notes.length > 0 ? notes.map(n => n.id).sort().reverse()[0] : 1
   return maxId + 1
-}
+} */
 
 const formatNote = (note) => {
   return {
@@ -150,4 +150,3 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
 
- 
