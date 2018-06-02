@@ -10,16 +10,32 @@ const formatNote = (note) => {
   }
 }
 
-notesRouter.get('/', (req, res) => {
-  Note
+notesRouter.get('/', async (req, res) => {
+  const notes = await Note.find({})
+  res.json(notes.map(formatNote))
+
+/*   Note
     .find({})
     .then(notes => {
       res.json(notes.map(formatNote))
-    })
+    }) */
 })
 
-notesRouter.get('/:id', (request, response) => {
-  Note
+notesRouter.get('/:id', async (request, response) => {
+  try {
+    const note = await Note.findById(request.params.id)
+    if (note) {
+      response.json(formatNote(note))
+    } else {
+      response.status(404).end()
+    }
+
+  } catch (exception) {
+    console.log(exception)
+    response.status(400).send({ error: 'malformatted id' })
+  }
+
+/*   Note
     .findById(request.params.id)
     .then(note => {
       if (note) {
@@ -32,41 +48,61 @@ notesRouter.get('/:id', (request, response) => {
     .catch(error => {
       console.log(error)
       response.status(400).send({ error: 'malformatted id' })
-    })
+    }) */
 })
 
 
-notesRouter.delete('/:id', (request, response) => {
-  Note
+notesRouter.delete('/:id', async (request, response) => {
+  try {
+    await Note.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+  } catch (exception) {
+    console.log(exception)
+    response.status(400).send({ error: 'malformatted id' })
+  }
+
+/*   Note
     .findByIdAndRemove(request.params.id)
     .then( () => {
       response.status(204).end()
     })
     .catch( () => {
       response.status(400).send({ error: 'malformatted id' })
-    })
+    }) */
 })
 
 
-notesRouter.post('/', (request, response) => {
-  const body = request.body
+notesRouter.post('/', async (request, response) => {
+  try {
+    const body = request.body
 
-  if (body.content === undefined) {
-    return response.status(400).json({ error: 'content missing' })
+    if (body.content === undefined) {
+      return response.status(400).json({ error: 'content missing' })
+    }
+
+    const note = new Note({
+      content: body.content,
+      important: body.important || false,
+      date: new Date()
+    })
+
+    const savedNote = await note.save()
+    response.json(formatNote(savedNote))
+  } catch (exception) {
+    console.log(exception)
+    response.status(500).json({ error: 'something went wrong...' })
   }
 
-  const note = new Note({
-    content: body.content,
-    important: body.important || false,
-    date: new Date()
-  })
-
-  note
+/*   note
     .save()
     .then(formatNote)
     .then(savedAndFormattedNote => {
       response.json(savedAndFormattedNote)
     })
+    .catch(error => {
+      console.log(error)
+      response.status(500).json({ error: 'something went wrong...' })
+    }) */
 })
 
 

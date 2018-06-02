@@ -1,23 +1,22 @@
+const http = require('http')
 const express = require('express')
 const app = express()       // funktio palauttaa express-olion
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const middleware = require('./utils/middleware')
-
+const config = require('./utils/config')
 const notesRouter = require('./controllers/notes')
 
 
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
 
-const url = process.env.MONGODB_URI
+const url = config.mongoUrl
 
 mongoose
   .connect(url)
   .then( () => {
-    console.log('connected to database', process.env.MONGODB_URI)
+    let uri = url.substring(url.indexOf('@') + 1, url.length)
+    console.log('connected to database', uri)
   })
   .catch( err => {
     console.log(err)
@@ -38,8 +37,22 @@ app.get('/', (req, res) => {
 
 app.use(middleware.error)
 
-const PORT = process.env.PORT || 3001
+const server = http.createServer(app)
+
+server.listen(config.port, () => {
+  console.log(`Server running on port ${config.port}`)
+})
+
+server.on('close', () => {
+  mongoose.connection.close()
+})
+
+module.exports = {
+  app, server
+}
+
+/* const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
-})
+}) */
 
