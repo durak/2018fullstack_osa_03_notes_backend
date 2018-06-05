@@ -2,12 +2,14 @@ const supertest = require('supertest')
 const { app, server } = require('../index')
 const api = supertest(app)
 const Note = require('../models/note')
-const { format, initialNotes, nonExistingId, notesInDb } = require('./test_helper')
+const User = require('../models/user')
+const { format, initialNotes, nonExistingId, notesInDb, usersInDb, getUser } = require('./test_helper')
 
 
 describe('when there is initially some notes saved', async () => {
   beforeAll(async () => {
     await Note.remove({})   // tyhjennetään kanta
+    await User.remove({})
 
     const noteObjects = initialNotes.map(note => new Note(note))
     const promiseArray = noteObjects.map(note => note.save())
@@ -84,6 +86,11 @@ describe('when there is initially some notes saved', async () => {
   })
 
   describe('addition of a new note', async () => {
+    let user
+
+    beforeAll(async () => {
+      user = await getUser('postman', 'pm', 'sekret')
+    })
 
     /**
      * hae kaikki DB:stä
@@ -95,13 +102,18 @@ describe('when there is initially some notes saved', async () => {
     test('POST /api/notes succeeds with valid data', async () => {
       const notesAtStart = await notesInDb()
 
+
+
       const newNote = {
         content: 'async/await yksinkertaistaa asynkronisten funktioiden kutsua',
-        important: true
+        important: true,
+        userId: user.id
       }
+
 
       await api
         .post('/api/notes')
+        .set('Authorization', 'bearer ' + user.token)
         .send(newNote)
         .expect(200)
         .expect('Content-Type', /application\/json/)
@@ -130,6 +142,7 @@ describe('when there is initially some notes saved', async () => {
 
       await api
         .post('/api/notes')
+        .set('Authorization', 'bearer ' + user.token)
         .send(newNote)
         .expect(400)
 

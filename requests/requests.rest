@@ -2,15 +2,43 @@ GET http://localhost:3001/api/notes
 
 ###
 
+GET http://localhost:3001/api/users
+
+###
+
 DELETE http://localhost:3001/api/notes/5b10760df4753b10d52e7b24
 
 ###
 
 POST http://localhost:3001/api/notes
 content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImvDpHl0dMOkasOkbmltaSIsImlkIjoiNWIxNWE0ZjM1N2FmOWIwOWUwMzNiMDYzIiwiaWF0IjoxNTI4MTkwNDc1fQ.EXOcktDMu5t411XHTryFYhtCHtH4IbqCXZu6Q7DaupY
 
 {
     "content": "testisyöte REST clientistä",
     "important": true,
-    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT",
+    "userId":"5b15a4f357af9b09e033b063"
+}
+
+###
+
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "käyttäjänimi",
+  "name": "nimi",
+  "password": "salasana"
+}
+
+###
+
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "käyttäjänimi",
+  "name": "nimi",
+  "password": "salasana"
 }
