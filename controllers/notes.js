@@ -108,8 +108,12 @@ notesRouter.post('/', async (request, response) => {
 
     response.json(Note.format(savedNote))
   } catch (exception) {
-    console.log(exception)
-    response.status(500).json({ error: 'something went wrong...' })
+    if (exception.name === 'JsonWebTokenError' ) {
+      response.status(401).json({ error: exception.message })
+    } else {
+      console.log(exception)
+      response.status(500).json({ error: 'something went wrong...' })
+    }
   }
 
 /*   note
